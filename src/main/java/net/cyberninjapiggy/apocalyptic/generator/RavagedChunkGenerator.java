@@ -30,6 +30,7 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 import org.bukkit.util.noise.PerlinOctaveGenerator;
+import org.bukkit.util.noise.SimplexOctaveGenerator;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -51,8 +52,6 @@ public class RavagedChunkGenerator extends ChunkGenerator {
 		this.genID = genID;
 		this.apocalyptic = p;
 
-
-
 	}
 	public static void setBlock(int x, int y, int z, byte[][] chunk, Material material) {
         if (chunk[y >> 4] == null)
@@ -66,8 +65,11 @@ public class RavagedChunkGenerator extends ChunkGenerator {
 }
     @Override
     public byte[][] generateBlockSections(World world, Random rand, int ChunkX, int ChunkZ, BiomeGrid biome) {
-        OctaveGenerator gen1 = new PerlinOctaveGenerator(world,8);
-        gen1.setScale(1/64.0);
+        OctaveGenerator worldGen = new PerlinOctaveGenerator(world,8);
+        worldGen.setScale(1 / 64.0);
+
+        OctaveGenerator caveGen = new SimplexOctaveGenerator(world,8);
+        caveGen.setScale(1 / 32.0);
         byte[][] chunk = new byte[world.getMaxHeight() / 16][];
         for (int x=0; x<16; x++) { 
             for (int z=0; z<16; z++) {
@@ -126,7 +128,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
                     sea_level = 30;
                 }
  
-                double maxHeight = gen1.noise(realX, realZ, frequency, amplitude) * multitude + sea_level;
+                double maxHeight = worldGen.noise(realX, realZ, frequency, amplitude) * multitude + sea_level;
                 for (int y = 1; y <= 6; y++) {
                     if (y == 1) {
                         setBlock(x,y,z,chunk,Material.BEDROCK);
@@ -156,12 +158,6 @@ public class RavagedChunkGenerator extends ChunkGenerator {
                         	if (world.getBiome(realX, realZ) == Biome.MESA || world.getBiome(realX, realZ) == Biome.MESA_BRYCE) {
                         		setBlock(x,y,z,chunk,Material.HARD_CLAY);
                         	}
-                        	else if (false && world.getBiome(realX, realZ) == Biome.SAVANNA) {
-                        		// TODO grassless dirt
-                        	}
-                        	else if (false && world.getBiome(realX, realZ) == Biome.FLOWER_FOREST) {
-                        		// TODO podzol
-                        	}
                             else if (world.getBiome(realX, realZ) == Biome.JUNGLE) {
                                 setBlock(x,y,z,chunk,Material.SAND);
                             }
@@ -176,7 +172,14 @@ public class RavagedChunkGenerator extends ChunkGenerator {
                         }
                     }
                     
-                } 
+                }
+                for (int y=10;y<sea_level + 6;y++) {
+                    double density = caveGen.noise(realX,y, realZ, 0.5, 0.5); //note 3d noise is VERY slow, I recommend using 2d noise to limit the number of 3d noise values that must be calculated.
+                    double threshold = 0.7; //the noise function returns values between -1 and 1.
+                    if (density > threshold) {
+                        setBlock(x,y,z,chunk,Material.AIR);
+                    }
+                }
             }
                 
         }
@@ -228,7 +231,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
         pops.add(new TreePopulator());
         pops.add(new OrePopulator(world));
         pops.add(new AbandonedHousePopulator(apocalyptic, config, chestPopulator));
-        pops.add(new CavePopulator());
+        //pops.add(new CavePopulator());
         pops.add(new LavaPopulator());
 
         ConfigurationSection schematics = config.getConfigurationSection("schematics");
