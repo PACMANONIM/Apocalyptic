@@ -64,7 +64,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
         } catch (Exception e) {e.printStackTrace();}
 }
     @Override
-    public byte[][] generateBlockSections(World world, Random rand, int ChunkX, int ChunkZ, BiomeGrid biome) {
+    public byte[][] generateBlockSections(World world, Random rand, int ChunkX, int ChunkZ, BiomeGrid biomes) {
         OctaveGenerator worldGen = new PerlinOctaveGenerator(world,8);
         worldGen.setScale(1 / 64.0);
 
@@ -80,49 +80,49 @@ public class RavagedChunkGenerator extends ChunkGenerator {
                 double amplitude = 0.2; // The distance between largest min and max values
                 int multitude = 2;
                 int sea_level = 64;
-                if (world.getBiome(realX, realZ) == Biome.SMALL_MOUNTAINS || world.getBiome(realX, realZ) == Biome.FOREST_HILLS
-                        || world.getBiome(realX, realZ) == Biome.TAIGA_HILLS || world.getBiome(realX, realZ) == Biome.JUNGLE_HILLS
-                        || world.getBiome(realX, realZ) == Biome.TAIGA_HILLS || world.getBiome(realX, realZ) == Biome.BIRCH_FOREST_HILLS
-                        || world.getBiome(realX, realZ) == Biome.COLD_TAIGA_HILLS || world.getBiome(realX, realZ) == Biome.DESERT_HILLS
-                        || world.getBiome(realX, realZ) == Biome.MEGA_TAIGA_HILLS) {
+                if (biomes.getBiome(x,z) == Biome.SMALL_MOUNTAINS || biomes.getBiome(x,z) == Biome.FOREST_HILLS
+                        || biomes.getBiome(x,z) == Biome.TAIGA_HILLS || biomes.getBiome(x,z) == Biome.JUNGLE_HILLS
+                        || biomes.getBiome(x,z) == Biome.TAIGA_HILLS || biomes.getBiome(x,z) == Biome.BIRCH_FOREST_HILLS
+                        || biomes.getBiome(x,z) == Biome.COLD_TAIGA_HILLS || biomes.getBiome(x,z) == Biome.DESERT_HILLS
+                        || biomes.getBiome(x,z) == Biome.MEGA_TAIGA_HILLS) {
                     multitude = 16; 
                 }
-                else if (world.getBiome(realX, realZ) == Biome.EXTREME_HILLS || world.getBiome(realX, realZ) == Biome.EXTREME_HILLS_MOUNTAINS
-                		|| world.getBiome(realX, realZ) == Biome.BIRCH_FOREST_MOUNTAINS || world.getBiome(realX, realZ) == Biome.TAIGA_MOUNTAINS) {
+                else if (biomes.getBiome(x,z) == Biome.EXTREME_HILLS || biomes.getBiome(x,z) == Biome.EXTREME_HILLS_MOUNTAINS
+                		|| biomes.getBiome(x,z) == Biome.BIRCH_FOREST_MOUNTAINS || biomes.getBiome(x,z) == Biome.TAIGA_MOUNTAINS) {
                     multitude = 32; 
                     amplitude = 0.1;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.EXTREME_HILLS_PLUS || world.getBiome(realX, realZ) == Biome.EXTREME_HILLS_PLUS_MOUNTAINS) {
+                else if (biomes.getBiome(x,z) == Biome.EXTREME_HILLS_PLUS || biomes.getBiome(x,z) == Biome.EXTREME_HILLS_PLUS_MOUNTAINS) {
                     amplitude = 0.01;
                     multitude = 64;
                     if (sea_level > 96)
                         sea_level = 96;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.SWAMPLAND) {
+                else if (biomes.getBiome(x,z) == Biome.SWAMPLAND) {
                     multitude = 32; 
                     amplitude = 0.001;
                     sea_level = 62;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.MUSHROOM_ISLAND) {
+                else if (biomes.getBiome(x,z) == Biome.MUSHROOM_ISLAND) {
                     multitude = 64; 
                     amplitude = 0.001;
                     sea_level *= 2;
                     if (sea_level > 128)
                         sea_level = 128;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.MUSHROOM_SHORE) {
+                else if (biomes.getBiome(x,z) == Biome.MUSHROOM_SHORE) {
                     multitude = 64; 
                     amplitude = 0.01;
                     sea_level *= 1.5;
                     if (sea_level > 96)
                         sea_level = 96;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.FROZEN_OCEAN || world.getBiome(realX, realZ) == Biome.OCEAN) {
+                else if (biomes.getBiome(x,z) == Biome.FROZEN_OCEAN || biomes.getBiome(x,z) == Biome.OCEAN) {
                     multitude = 16; 
                     amplitude = 0.1;
                     sea_level = 42;
                 }
-                else if (world.getBiome(realX, realZ) == Biome.DEEP_OCEAN) {
+                else if (biomes.getBiome(x,z) == Biome.DEEP_OCEAN) {
                 	multitude = 16; 
                     amplitude = 0.1;
                     sea_level = 30;
@@ -155,10 +155,10 @@ public class RavagedChunkGenerator extends ChunkGenerator {
                             setBlock(x,y,z,chunk,Material.SAND);
                         }
                         else {
-                        	if (world.getBiome(realX, realZ) == Biome.MESA || world.getBiome(realX, realZ) == Biome.MESA_BRYCE) {
+                        	if (biomes.getBiome(x,z) == Biome.MESA || biomes.getBiome(x,z) == Biome.MESA_BRYCE) {
                         		setBlock(x,y,z,chunk,Material.HARD_CLAY);
                         	}
-                            else if (world.getBiome(realX, realZ) == Biome.JUNGLE) {
+                            else if (biomes.getBiome(x,z) == Biome.JUNGLE) {
                                 setBlock(x,y,z,chunk,Material.SAND);
                             }
                         	else {
