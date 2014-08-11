@@ -21,10 +21,7 @@ package net.cyberninjapiggy.apocalyptic.events;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
 import net.cyberninjapiggy.apocalyptic.misc.ZombieHelper;
-import net.minecraft.server.v1_7_R4.AttributeInstance;
-import net.minecraft.server.v1_7_R4.AttributeModifier;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
@@ -34,6 +31,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -52,6 +50,8 @@ public class MonsterSpawn implements Listener {
 
         if (entity.getType() == EntityType.ZOMBIE && a.worldEnabledZombie(entity.getLocation().getWorld().getName())){
             EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) entity).getHandle();
+            EntityZombie zombie = (EntityZombie) nmsEntity;
+
             AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.d);
 
             AttributeModifier modifier = new AttributeModifier(zombieSpeedUUID, "Apocalyptic movement speed modifier", a.getConfig().getWorld(event.getEntity().getWorld()).getDouble("mobs.zombies.speedMultiplier"), 1);
@@ -98,7 +98,13 @@ public class MonsterSpawn implements Listener {
                     	continue;
                     }
                     failedAttempts = 0;
-                    l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
+                    Zombie zombie = (Zombie) l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
+                    EntityEquipment equipment = zombie.getEquipment();
+                    if (equipment.getHelmet() != null && !zombie.isBaby() && !a.getConfig().getWorld(zombie.getWorld()).getBoolean("mobs.zombies.burnInDaylight")) {
+                        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte)2);
+                        equipment.setHelmet(head);
+                        equipment.setHelmetDropChance(0f);
+                    }
                     i++;
                     
                 }
