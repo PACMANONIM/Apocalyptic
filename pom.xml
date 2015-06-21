@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+  ~ Copyright (C) 2015 Kaisar Arkhan
   ~ Copyright (C) 2014 Nick Schatz
   ~
   ~     This file is part of Apocalyptic.
@@ -28,7 +29,7 @@
     <version>2.3.8</version>
 
     <properties>
-        <bukkitDir>C:/Users/Nick/Programming/LocalBukkit/</bukkitDir>
+        <bukkitDir>/run/media/yuki/Nagato HD/Nucleus/Nucleus-Z/</bukkitDir>
 
         <buildDir>${project.build.outputDirectory}</buildDir>
 
@@ -45,45 +46,53 @@
 
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+        
         <repository>
             <id>dakani</id>
             <name>Dakani Nexus Repo</name>
             <url>http://repo.dakanilabs.com/content/repositories/public</url>
         </repository>
+        
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
+    
     <dependencies>
+    	<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8-R0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.8-R0.1-SNAPSHOT</version>
+		</dependency>
+    
         <dependency>
             <groupId>lib.PatPeter.SQLibrary</groupId>
             <artifactId>SQLibrary</artifactId>
             <version>7.1</version>
         </dependency>
+        
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.5.8-SNAPSHOT</version>
+            <version>6.0.0-SNAPSHOT</version>
         </dependency>
+        
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
             <version>5.8.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
-        </dependency>
+        
     </dependencies>
 
     <build>
@@ -158,7 +167,7 @@
                     <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
                     <includes><include>**/*</include></includes>
                     <repositoryName>Apocalyptic</repositoryName>      <!-- github repo name -->
-                    <repositoryOwner>epicfacecreeper</repositoryOwner>    <!-- github username  -->
+                    <repositoryOwner>captainfroster</repositoryOwner>    <!-- github username  -->
                 </configuration>
                 <executions>
                     <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
