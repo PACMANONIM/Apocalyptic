@@ -39,7 +39,8 @@ meta:
   #Do not edit version
   version: @version@
   version-check: true
-  auto-update: true
+# Disabled because this is a forked version
+#  auto-update: true
   show-download-progress: true
   #True to use permissions. False defaults to requiring op for most commands.
   permissions: false

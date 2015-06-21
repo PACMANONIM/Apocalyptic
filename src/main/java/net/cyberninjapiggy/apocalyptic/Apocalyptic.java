@@ -170,6 +170,8 @@ public final class Apocalyptic extends JavaPlugin {
 
         radiationManager = new RadiationManager(db, this);
 
+        // Disabled because this is a Forked version
+        /*
         if (getConfig().getBoolean("meta.version-check")) {
         	Updater versionCheck = new Updater(this, dboId, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
         	if (versionCheck.getResult() != Updater.UpdateResult.DISABLED && !versionCheck.getLatestName().equals(this.getDescription().getName() + " v" + this.getDescription().getVersion())) {
@@ -181,6 +183,7 @@ public final class Apocalyptic extends JavaPlugin {
         		}
         	}
         }
+        */
         
         //CommandExecutors
         getCommand("radiation").setExecutor(new RadiationCommandExecutor(this));
