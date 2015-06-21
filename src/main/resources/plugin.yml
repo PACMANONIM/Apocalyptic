@@ -2,6 +2,7 @@ name: @name@
 main: net.cyberninjapiggy.apocalyptic.Apocalyptic
 version: @version@
 author: awesomefacecreeper
+authors: [ captainFroster ]
 description: Apocalyptic world generator, radiation manager, zombie apocalypses and more.
 load: startup
 depend: [SQLibrary]
