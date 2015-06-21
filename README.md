@@ -19,9 +19,16 @@ worlds:
 Where `<world>` is the name of the world you want to generate.
 
 If you use Multiverse, run this command to make a new Apocalyptic world.
+
 `/mv create <world> normal -g Apocalyptic`
+
 Again, where `<world>` is the name of the world you want to generate.
 
 Run the server. This will generate some of the world and create config files.
 
 Done! Have fun!
+
+## TODO List
+- [x] Make it Compatible with 1.8
+- [ ] Better Zombie spawn picking
+- [ ] Natural spawning for sugarcane and cactus
