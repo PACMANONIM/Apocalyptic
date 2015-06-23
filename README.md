@@ -32,5 +32,7 @@ Done! Have fun!
 
 ## TODO List
 - [x] Make it Compatible with 1.8
+- [ ] Use PreparedStatements instead of Plain Query
+- [ ] Clean the Code ( again )
 - [ ] Better Zombie spawn picking
 - [ ] Natural spawning for sugarcane and cactus
