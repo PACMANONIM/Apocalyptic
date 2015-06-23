@@ -45,54 +45,64 @@
     </distributionManagement>
 
     <repositories>
+	<repository>
+		<id>spigot-repo</id>
+		<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+	</repository>
+
         <repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
+		<id>elmakers-repo</id>
+		<url>https://maven.elmakers.com/repository</url>
+	</repository>
         
         <repository>
-            <id>dakani</id>
-            <name>Dakani Nexus Repo</name>
-            <url>http://repo.dakanilabs.com/content/repositories/public</url>
+        	<id>dakani</id>
+        	<name>Dakani Nexus Repo</name>
+        	<url>http://repo.dakanilabs.com/content/repositories/public</url>
         </repository>
         
         <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
+        	<id>sk89q-repo</id>
+        	<url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
     
     <dependencies>
+	<dependency>
+		<groupId>org.spigotmc</groupId>
+		<artifactId>minecraft-server</artifactId>
+		<version>1.8-SNAPSHOT</version>
+	</dependency>
+	
     	<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
-		</dependency>
+		<groupId>org.spigotmc</groupId>
+		<artifactId>spigot-api</artifactId>
+		<version>1.8-R0.1-SNAPSHOT</version>
+	</dependency>
 		
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
-		</dependency>
+	<dependency>
+		<groupId>org.bukkit</groupId>
+		<artifactId>bukkit</artifactId>
+		<version>1.8-R0.1-SNAPSHOT</version>
+	</dependency>
     
         <dependency>
-            <groupId>lib.PatPeter.SQLibrary</groupId>
-            <artifactId>SQLibrary</artifactId>
-            <version>7.1</version>
+        	<groupId>lib.PatPeter.SQLibrary</groupId>
+        	<artifactId>SQLibrary</artifactId>
+        	<version>7.1</version>
         </dependency>
         
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+        	<groupId>com.sk89q</groupId>
+        	<artifactId>worldedit</artifactId>
+        	<version>6.0.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+        	<groupId>com.sk89q</groupId>
+        	<artifactId>worldguard</artifactId>
+        	<version>6.0.0-SNAPSHOT</version>
         </dependency>
-        
     </dependencies>
 
     <build>
