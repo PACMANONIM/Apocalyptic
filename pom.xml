@@ -45,11 +45,6 @@
     </distributionManagement>
 
     <repositories>
-	<repository>
-		<id>spigot-repo</id>
-		<url>http://hub.spigotmc.org/nexus/content/groups/public</url>
-	</repository>
-
         <repository>
 		<id>elmakers-repo</id>
 		<url>http://maven.elmakers.com/repository</url>
@@ -70,19 +65,7 @@
     <dependencies>
 	<dependency>
 		<groupId>org.spigotmc</groupId>
-		<artifactId>minecraft-server</artifactId>
-		<version>1.8-SNAPSHOT</version>
-	</dependency>
-	
-    	<dependency>
-		<groupId>org.spigotmc</groupId>
-		<artifactId>spigot-api</artifactId>
-		<version>1.8-R0.1-SNAPSHOT</version>
-	</dependency>
-		
-	<dependency>
-		<groupId>org.bukkit</groupId>
-		<artifactId>bukkit</artifactId>
+		<artifactId>spigot</artifactId>
 		<version>1.8-R0.1-SNAPSHOT</version>
 	</dependency>
     
