@@ -1,5 +1,4 @@
-# Apocalyptic
-
+# Apocalyptic [![Build Status](https://drone.io/github.com/captainfroster/Apocalyptic/status.png)](https://drone.io/github.com/captainfroster/Apocalyptic/latest)
 
 Apocalyptic plugin for Bukkit
 
