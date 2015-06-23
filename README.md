@@ -6,6 +6,9 @@ Apocalyptic plugin for Bukkit
 
 [Original Project page and downloads](http://dev.bukkit.org/bukkit-plugins/apocalyptic/)
 
+## Downloads & Releases
+You can download a Development Build of this Project from [here](https://drone.io/github.com/captainfroster/Apocalyptic/files)
+
 ## Installation
 
 Download Apocalyptic.jar and add to your /plugins/ folder.
