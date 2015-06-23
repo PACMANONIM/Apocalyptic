@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -29,47 +30,60 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-/**
- *
- * @author Nick
- */
 public class PlayerDamaged implements Listener {
-    private final Apocalyptic a;
-    @EventHandler
-    public void onPlayerDamagedByEntity(EntityDamageByEntityEvent e) {
-        if (e.getEntityType() == EntityType.PLAYER) {
-            if (a.worldEnabledZombie(e.getEntity().getWorld().getName()) && e.getDamager().getType() == EntityType.ZOMBIE) {
-                e.setDamage(e.getDamage() * a.getConfig().getWorld(e.getEntity().getWorld()).getInt("mobs.zombies.damageMultiplier"));
-                if (a.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.hunger")) {
-                    ((Player) e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 1));
-                }
-                if (a.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.weakness")) {
-                    ((Player) e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 40, 1));
-                }
-                if (a.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.slowness")) {
-                    ((Player) e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1));
-                }
-                if (a.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.nausea")) {
-                    ((Player) e.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 40, 1));
-                }
-            }
-        }
-    }
-    @EventHandler
-    public void onPlayerDamaged(EntityDamageEvent e) {
-        if (e.getEntityType() == EntityType.PLAYER) {
-            if (a.worldEnabledFallout(e.getEntity().getWorld().getName())) {
-                
-                if (a.getRadiationManager().getPlayerRadiation((Player) e.getEntity()) >= 10) {
-                    e.setDamage(e.getDamage() * 4);
-                }
-                else if (a.getRadiationManager().getPlayerRadiation((Player) e.getEntity()) >= 1) {
-                    e.setDamage(e.getDamage() * 2);
-                }
-            }
-        }
-    }
-    public PlayerDamaged(Apocalyptic a) {
-        this.a = a;
-    } 
+	private final Apocalyptic plugin;
+	
+	public PlayerDamaged(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
+	
+	@EventHandler
+	public void onPlayerDamagedByEntity(EntityDamageByEntityEvent e) {
+		if (e.getEntityType() == EntityType.PLAYER) {
+			if (plugin.worldEnabledZombie(e.getEntity().getWorld().getName()) && 
+					e.getDamager().getType() == EntityType.ZOMBIE) {
+				e.setDamage(e.getDamage() * plugin.getConfig().getWorld(
+							e.getEntity().getWorld()).getInt("mobs.zombies.damageMultiplier"));
+				
+				if (plugin.getConfig().getWorld(
+						e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.hunger")) {
+					((Player) e.getEntity()).addPotionEffect(
+							new PotionEffect(PotionEffectType.HUNGER, 40, 1));
+				}
+				
+				if (plugin.getConfig().getWorld(
+						e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.weakness")) {
+					((Player) e.getEntity()).addPotionEffect(
+							new PotionEffect(PotionEffectType.WEAKNESS, 40, 1));
+				}
+				
+				if (plugin.getConfig().getWorld(
+						e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.slowness")) {
+					((Player) e.getEntity()).addPotionEffect(
+							new PotionEffect(PotionEffectType.SLOW, 40, 1));
+				}
+				
+				if (plugin.getConfig().getWorld(
+						e.getEntity().getWorld()).getBoolean("mobs.zombies.effects.nausea")) {
+					((Player) e.getEntity()).addPotionEffect(
+							new PotionEffect(PotionEffectType.CONFUSION, 40, 1));
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerDamaged(EntityDamageEvent e) {
+		if (e.getEntityType() == EntityType.PLAYER) {
+			if (plugin.worldEnabledFallout(e.getEntity().getWorld().getName())) {
+
+				if (plugin.getRadiationManager().getPlayerRadiation((Player) e.getEntity()) >= 10) {
+					e.setDamage(e.getDamage() * 4);
+				} else if (plugin.getRadiationManager().getPlayerRadiation((Player) e.getEntity()) >= 1) {
+					e.setDamage(e.getDamage() * 2);
+				}
+			}
+		}
+	}
+	
 }

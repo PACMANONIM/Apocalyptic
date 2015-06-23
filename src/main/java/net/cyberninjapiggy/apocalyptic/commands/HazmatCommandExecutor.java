@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -29,71 +30,72 @@ import org.bukkit.entity.Player;
 
 public class HazmatCommandExecutor implements CommandExecutor {
 
-    private Apocalyptic plugin;
+	private Apocalyptic plugin;
 
-    public HazmatCommandExecutor(Apocalyptic plugin) {
-        this.plugin = plugin;
-    }
+	public HazmatCommandExecutor(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
 
-    @Override
-    public boolean onCommand(CommandSender commandSender, Command cmd, String label, String[] args) {
-        if (label.equals("hazmat")) {
-            if (args.length == 0) {
-                return false;
-            }
-            else if (args.length == 1) {
-                if (commandSender instanceof Player) {
-                    if (plugin.canDoCommand(commandSender, "hazmatArmor.self")) {
-                        switch (args[0]) {
-                            case "helmet":
-                                ((Player)commandSender).getInventory().addItem(plugin.getHazmatHood()); return true;
-                            case "chest":
-                                ((Player)commandSender).getInventory().addItem(plugin.getHazmatSuit()); return true;
-                            case "pants":
-                                ((Player)commandSender).getInventory().addItem(plugin.getHazmatPants()); return true;
-                            case "boots":
-                                ((Player)commandSender).getInventory().addItem(plugin.getHazmatBoots()); return true;
-                            default:
-                                return false;
-                        }
-                    }
-                    else {
-                        commandSender.sendMessage(ChatColor.RED+"You don't have permission.");
-                    }
-                }
-                else {
-                    commandSender.sendMessage(ChatColor.RED+"This command can only be used by a player!");
-                }
-            }
+	@Override
+	public boolean onCommand(CommandSender commandSender, Command cmd, String label, String[] args) {
+		if (label.equals("hazmat")) {
+			if (args.length == 0) {
+				return false;
+			} else if (args.length == 1) {
+				if (commandSender instanceof Player) {
+					if (plugin.canDoCommand(commandSender, "hazmatArmor.self")) {
+						switch (args[0]) {
+							case "helmet":
+								((Player) commandSender).getInventory().addItem(plugin.getHazmatHood());
+								return true;
+							case "chest":
+								((Player) commandSender).getInventory().addItem(plugin.getHazmatSuit());
+								return true;
+							case "pants":
+								((Player) commandSender).getInventory().addItem(plugin.getHazmatPants());
+								return true;
+							case "boots":
+								((Player) commandSender).getInventory().addItem(plugin.getHazmatBoots());
+								return true;
+							default:
+								return false;
+						}
+					} else {
+						commandSender.sendMessage(ChatColor.RED + "You don't have permission.");
+					}
+				} else {
+					commandSender.sendMessage(ChatColor.RED + "This command can only be used by a player!");
+				}
+			} else if (args.length == 2) {
+				if (plugin.canDoCommand(commandSender, "hazmatArmor.other")) {
+					Player player;
+					if ((player = Bukkit.getPlayer(args[1])) == null) {
+						commandSender.sendMessage("Cannot find that player.");
+						return true;
+					}
+					switch (args[0]) {
+						case "helmet":
+							player.getInventory().addItem(plugin.getHazmatHood());
+							return true;
+						case "chest":
+							player.getInventory().addItem(plugin.getHazmatSuit());
+							return true;
+						case "pants":
+							player.getInventory().addItem(plugin.getHazmatPants());
+							return true;
+						case "boots":
+							player.getInventory().addItem(plugin.getHazmatBoots());
+							return true;
+						default:
+							return false;
+					}
+				} else {
+					commandSender.sendMessage(ChatColor.RED + "You don't have permission.");
+				}
 
-            else if (args.length == 2) {
-                if (plugin.canDoCommand(commandSender, "hazmatArmor.other")) {
-                    Player player;
-                    //I am allowing deprecated usage because it is easier to use a command on a player using name.
-                    if ((player = Bukkit.getPlayer(args[1])) == null) {
-                        commandSender.sendMessage("Cannot find that player.");
-                        return true;
-                    }
-                    switch (args[0]) {
-                        case "helmet":
-                            player.getInventory().addItem(plugin.getHazmatHood()); return true;
-                        case "chest":
-                            player.getInventory().addItem(plugin.getHazmatSuit()); return true;
-                        case "pants":
-                            player.getInventory().addItem(plugin.getHazmatPants()); return true;
-                        case "boots":
-                            player.getInventory().addItem(plugin.getHazmatBoots()); return true;
-                        default:
-                            return false;
-                    }
-                }
-                else {
-                    commandSender.sendMessage(ChatColor.RED+"You don't have permission.");
-                }
+			}
+		}
 
-            }
-        }
-
-        return false;
-    }
+		return false;
+	}
 }

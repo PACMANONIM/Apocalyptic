@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -24,17 +25,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-/**
- *
- * @author Nick
- */
 public class PlayerSpawn implements Listener {
-    private final Apocalyptic a;
-    public PlayerSpawn(Apocalyptic a) {
-        this.a = a;
-    }
-    @EventHandler
-    public void onPlayerSpawn(PlayerRespawnEvent e) {
-        a.getRadiationManager().setPlayerRadiation(e.getPlayer(), 0.0);
-    }
+	private final Apocalyptic plugin;
+
+	public PlayerSpawn(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
+	
+	@EventHandler
+	public void onPlayerSpawn(PlayerRespawnEvent e) {
+		plugin.getRadiationManager().setPlayerRadiation(e.getPlayer(), 0.0);
+	}
 }

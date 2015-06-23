@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -25,24 +26,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-/**
- *
- * @author Nick
- */
 public class PlayerMove implements Listener {
-    private final Apocalyptic a;
-    public PlayerMove(Apocalyptic a) {
-        this.a = a;
-    }
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e) {
-        if (a.worldEnabledFallout(e.getPlayer().getWorld().getName())) {
-            if (e.getTo().getWorld().getBlockAt(e.getTo()).getType() == Material.WATER || e.getTo().getWorld().getBlockAt(e.getTo()).getType() == Material.STATIONARY_WATER) {
-                if (a.getConfig().getDouble("maxRadiationWashable") >= a.getRadiationManager().getPlayerRadiation(e.getPlayer()))
-                    a.getRadiationManager().setPlayerRadiation(e.getPlayer(), 0.0);
-                
-            }
-        }
-    }
-    
+	private final Apocalyptic plugin;
+
+	public PlayerMove(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent e) {
+		if (plugin.worldEnabledFallout(e.getPlayer().getWorld().getName())) {
+			if (e.getTo().getWorld().getBlockAt(e.getTo()).getType() == Material.WATER || e.getTo().getWorld().getBlockAt(e.getTo()).getType() == Material.STATIONARY_WATER) {
+				if (plugin.getConfig().getDouble("maxRadiationWashable") >= plugin.getRadiationManager().getPlayerRadiation(e.getPlayer())) 
+					plugin.getRadiationManager().setPlayerRadiation(e.getPlayer(), 0.0);
+			}
+		}
+	}
+
 }

@@ -27,7 +27,6 @@ import net.cyberninjapiggy.apocalyptic.misc.ZombieHelper;
 import net.minecraft.server.v1_8_R1.AttributeInstance;
 import net.minecraft.server.v1_8_R1.AttributeModifier;
 import net.minecraft.server.v1_8_R1.EntityInsentient;
-import net.minecraft.server.v1_8_R1.EntityZombie;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
 
 import org.bukkit.Location;
@@ -46,100 +45,113 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-/**
- *
- * @author Kaisar Arkhan
- * @author Nick
- */
 public class MonsterSpawn implements Listener {
-    private final Apocalyptic a;
-    private final UUID zombieSpeedUUID = UUID.fromString("fb972eb0-b792-4ec3-b255-5740974f6eed");
+	private final Apocalyptic plugin;
+	private final UUID zombieSpeedUUID = UUID.fromString("fb972eb0-b792-4ec3-b255-5740974f6eed");
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEntitySpawn(CreatureSpawnEvent event){
-        LivingEntity entity = event.getEntity();
+	public MonsterSpawn(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEntitySpawn(CreatureSpawnEvent event) {
+		LivingEntity entity = event.getEntity();
 
-        if (entity.getType() == EntityType.ZOMBIE && a.worldEnabledZombie(entity.getLocation().getWorld().getName())){
-        	EntityInsentient nmsEntity = (EntityInsentient) ((CraftEntity) entity).getHandle();
-            EntityZombie zombie = (EntityZombie) nmsEntity;
+		if (entity.getType() == EntityType.ZOMBIE && 
+				plugin.worldEnabledZombie(entity.getLocation().getWorld().getName())) {
+			EntityInsentient nmsEntity = (EntityInsentient)((CraftEntity) entity).getHandle();
 
-            AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.d);
+			AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.d);
 
-            AttributeModifier modifier = new AttributeModifier(zombieSpeedUUID, "Apocalyptic movement speed modifier", a.getConfig().getWorld(event.getEntity().getWorld()).getDouble("mobs.zombies.speedMultiplier"), 1);
+			AttributeModifier modifier = new AttributeModifier(zombieSpeedUUID, "Apocalyptic movement speed modifier", plugin.getConfig().getWorld(event.getEntity().getWorld()).getDouble("mobs.zombies.speedMultiplier"), 1);
 
-            attributes.b(modifier);
-            attributes.a(modifier);
-        }
-    }
+			attributes.b(modifier);
+			attributes.a(modifier);
+		}
+	}
 
-    @EventHandler
-    public void onMonsterSpawn(CreatureSpawnEvent e) {
-        
-        if (e.getEntityType() == EntityType.ZOMBIE && a.worldEnabledZombie(e.getLocation().getWorld().getName())) {
-        	if (e.getEntity().getWorld().getEntitiesByClass(Zombie.class).size() >= 
-        			a.getConfig().getWorld(e.getLocation().getWorld()).getInt("mobs.zombies.spawnLimit")) {
-        		e.setCancelled(true);
-        		return;
-        	}
-            
-            Location l = e.getLocation();
-            if (a.getRandom().nextInt(300) == 0 && a.getConfig().getWorld(e.getLocation().getWorld()).getBoolean("mobs.mutants.zombie")) {
-                e.setCancelled(true);
-                l.getWorld().spawnEntity(l, EntityType.GIANT);
-                return;
-            }
-            e.getEntity().setMaxHealth(a.getConfig().getWorld(e.getEntity().getWorld()).getDouble("mobs.zombies.health"));
-            e.getEntity().setHealth(a.getConfig().getWorld(e.getEntity().getWorld()).getDouble("mobs.zombies.health"));
-            
-            if (e.getSpawnReason() != SpawnReason.CUSTOM && e.getSpawnReason() != SpawnReason.SPAWNER) {
-                int hordeSize = a.getRandom().nextInt(
-                        a.getConfig().getWorld(e.getEntity().getWorld()).getInt("mobs.zombies.hordeSize.max") - 
-                        a.getConfig().getWorld(e.getEntity().getWorld()).getInt("mobs.zombies.hordeSize.min")) + 
-                        a.getConfig().getWorld(e.getEntity().getWorld()).getInt("mobs.zombies.hordeSize.min");
-                int failedAttempts = 0;
-                for (int i=0;i<hordeSize;) {
-                    // TODO make point selection better
-                    int spotX = 7-a.getRandom().nextInt(14);
-                    int spotZ = 7-a.getRandom().nextInt(14);
-                    //int spotY = 3-a.getRandom().nextInt(6);
-                    Location spawnPoint = l.add(spotX, 0/*spotY*/, spotZ);
-                    spawnPoint.setY(l.getWorld().getHighestBlockYAt(spotX, spotZ));
-                    if (!ZombieHelper.canZombieSpawn(spawnPoint) && failedAttempts <= 10) {
-                    	failedAttempts++;
-                    	continue;
-                    }
-                    failedAttempts = 0;
-                    Zombie zombie = (Zombie) l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
-                    EntityEquipment equipment = zombie.getEquipment();
-                    if (equipment.getHelmet() != null && !zombie.isBaby() && !a.getConfig().getWorld(zombie.getWorld()).getBoolean("mobs.zombies.burnInDaylight")) {
-                        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte)2);
-                        equipment.setHelmet(head);
-                        equipment.setHelmetDropChance(0f);
-                    }
-                    i++;
-                    
-                }
-            }
-            
-        }
-        if (e.getEntityType() == EntityType.CREEPER) {
-            if (a.getConfig().getBoolean("worlds." + e.getLocation().getWorld().getName() + ".mobs.mutants.creeper")) {
-                if (a.getRandom().nextInt(100) == 0) {
-                    ((Creeper) e.getEntity()).setPowered(true);
-                    return;
-                }
-            }
-        }
-        if (e.getEntityType() == EntityType.SKELETON) {
-            if (a.getConfig().getBoolean("worlds." + e.getLocation().getWorld().getName() + ".mobs.mutants.skeleton")) {
-                if (a.getRandom().nextInt(100) == 0) {
-                    ((Skeleton) e.getEntity()).setSkeletonType(Skeleton.SkeletonType.WITHER);
-                    e.getEntity().getEquipment().setItemInHand(new ItemStack(Material.IRON_SWORD, 0));
-                }
-            }
-        }
-    }
-    public MonsterSpawn(Apocalyptic a) {
-        this.a = a;
-    }
+	@EventHandler
+	public void onMonsterSpawn(CreatureSpawnEvent e) {
+		if (e.getEntityType() == EntityType.ZOMBIE && 
+				plugin.worldEnabledZombie(e.getLocation().getWorld().getName())) {
+			if (e.getEntity().getWorld().getEntitiesByClass(Zombie.class).size() 
+					>= plugin.getConfig().getWorld(
+							e.getLocation().getWorld()).getInt("mobs.zombies.spawnLimit")) {
+				e.setCancelled(true);
+				return;
+			}
+
+			Location l = e.getLocation();
+			
+			if (plugin.getRandom().nextInt(300) == 0 && 
+					plugin.getConfig().getWorld(e.getLocation().getWorld()).getBoolean("mobs.mutants.zombie")) {
+				e.setCancelled(true);
+				l.getWorld().spawnEntity(l, EntityType.GIANT);
+				return;
+			}
+			
+			e.getEntity().setMaxHealth(plugin.getConfig().getWorld(
+					e.getEntity().getWorld()).getDouble("mobs.zombies.health"));
+			e.getEntity().setHealth(plugin.getConfig().getWorld(
+					e.getEntity().getWorld()).getDouble("mobs.zombies.health"));
+
+			if (e.getSpawnReason() != SpawnReason.CUSTOM && e.getSpawnReason() != SpawnReason.SPAWNER) {
+				int hordeSize = plugin.getRandom().nextInt(
+				plugin.getConfig().getWorld(e.getEntity().getWorld()).getInt("mobs.zombies.hordeSize.max") 
+					- plugin.getConfig().getWorld(e.getEntity().getWorld()).getInt(
+							"mobs.zombies.hordeSize.min")) + plugin.getConfig().getWorld(
+									e.getEntity().getWorld()).getInt("mobs.zombies.hordeSize.min");
+				int failedAttempts = 0;
+				for (int i = 0; i < hordeSize;) {
+					//int spotX = 7-a.getRandom().nextInt(14);
+					//int spotZ = 7-a.getRandom().nextInt(14);
+					//int spotY = 3-a.getRandom().nextInt(6);
+					double angle = Math.random() * 360;
+					double radius = Math.random() * 7; // TODO: Max Radius at config
+
+					int spotX = Math.round((float) Math.cos(angle));
+					int spotZ = Math.round((float)(Math.sin(angle) * radius));
+					int spotY = l.getWorld().getHighestBlockYAt(spotX, spotZ);
+
+					Location spawnPoint = l.add(spotX, spotY, spotZ);
+					if (!ZombieHelper.canZombieSpawn(spawnPoint) && failedAttempts <= 10) {
+						failedAttempts++;
+						continue;
+					}
+					failedAttempts = 0;
+					Zombie zombie = (Zombie) l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
+					EntityEquipment equipment = zombie.getEquipment();
+					if (equipment.getHelmet() != null && !zombie.isBaby() && !plugin.getConfig().getWorld(zombie.getWorld()).getBoolean("mobs.zombies.burnInDaylight")) {
+						ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (byte) 2);
+						equipment.setHelmet(head);
+						equipment.setHelmetDropChance(0f);
+					}
+					i++;
+
+				}
+			}
+
+		}
+		
+		if (e.getEntityType() == EntityType.CREEPER) {
+			if (plugin.getConfig().getBoolean(
+					"worlds." + e.getLocation().getWorld().getName() + ".mobs.mutants.creeper")) {
+				if (plugin.getRandom().nextInt(100) == 0) {
+					((Creeper) e.getEntity()).setPowered(true);
+					return;
+				}
+			}
+		}
+		
+		if (e.getEntityType() == EntityType.SKELETON) {
+			if (plugin.getConfig().getBoolean(
+					"worlds." + e.getLocation().getWorld().getName() + ".mobs.mutants.skeleton")) {
+				if (plugin.getRandom().nextInt(100) == 0) {
+					((Skeleton) e.getEntity()).setSkeletonType(Skeleton.SkeletonType.WITHER);
+					e.getEntity().getEquipment().setItemInHand(new ItemStack(Material.IRON_SWORD, 0));
+				}
+			}
+		}
+	}
+	
 }

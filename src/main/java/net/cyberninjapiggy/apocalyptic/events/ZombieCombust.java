@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -28,16 +29,17 @@ import org.bukkit.event.entity.EntityCombustEvent;
 
 public class ZombieCombust implements Listener {
 	private final Apocalyptic plugin;
+	
+	public ZombieCombust(Apocalyptic plugin) {
+		this.plugin = plugin;
+	}
+	
 	@EventHandler
 	public void onZombieBurn(EntityCombustEvent e) {
-		if (plugin.worldEnabledZombie(e.getEntity().getWorld().getName()) 
-				&& plugin.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.burnInDaylight")) {
+		if (plugin.worldEnabledZombie(e.getEntity().getWorld().getName()) && plugin.getConfig().getWorld(e.getEntity().getWorld()).getBoolean("mobs.zombies.burnInDaylight")) {
 			if (!(e instanceof EntityCombustByEntityEvent) && !(e instanceof EntityCombustByBlockEvent)) {
 				e.setCancelled(true);
 			}
 		}
-	}
-	public ZombieCombust(Apocalyptic p) {
-		this.plugin = p;
 	}
 }

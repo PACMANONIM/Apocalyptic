@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -46,14 +47,15 @@ public class Util {
         }
         return titled;
     }
+    
     public static ItemStack setName(ItemStack is, String name){
         ItemMeta m = is.getItemMeta();
         m.setDisplayName(name);
         is.setItemMeta(m);
         return is;
     }
-    public static void damageWithCause(Player p, String damager, int damage)
-    {
+    
+    public static void damageWithCause(Player p, String damager, int damage){
         LivingEntity e = p.getWorld().spawn(p.getLocation().add(0,-15,0), Squid.class);
         e.setCustomNameVisible(true);
         e.setCustomName(ChatColor.translateAlternateColorCodes('&', damager));
@@ -61,6 +63,7 @@ public class Util {
         p.damage(damage, e);
         e.remove();
     }
+    
     public static double getBiomeTemp(Location l) {
         int x = l.getBlockX();
         int z = l.getBlockZ();

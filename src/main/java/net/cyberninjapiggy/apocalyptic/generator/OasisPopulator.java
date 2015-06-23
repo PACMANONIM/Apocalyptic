@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -24,10 +25,6 @@ import org.bukkit.generator.BlockPopulator;
 
 import java.util.Random;
 
-/**
- *
- * @author Nick
- */
 public class OasisPopulator extends BlockPopulator {
     private int frequency;
     private final int maxSize;
@@ -78,6 +75,7 @@ public class OasisPopulator extends BlockPopulator {
                 matrix[col] = row;
             }
             Location tree = new Location(world, realX+(size-1)/2, world.getHighestBlockYAt(realX+(size-1)/2, realZ+(size-1)/2)-1, realZ+(size-1)/2);
+            
             for (int x=0;x<size;x++) {
                 for (int y=0;y<size;y++) {
                     if (matrix[x][y] == 1) {
@@ -108,7 +106,9 @@ public class OasisPopulator extends BlockPopulator {
                     }
                 }
             }
-             TreeType tt;
+            
+            TreeType tt;
+            
             switch(rand.nextInt(9)) {
                 case 0:
                     tt = TreeType.BIG_TREE;
@@ -142,18 +142,19 @@ public class OasisPopulator extends BlockPopulator {
             }
             
             
-            for (int i=1;i<3;i++) {
+            for (int i=1;i<3;i++) 
             	genDirtCircle(world, rand, chunk, size-i, i, realX, realZ);
-            }
+            
             world.generateTree(tree, tt);
         }
     }
+    
     private void genDirtCircle(World world, Random rand, Chunk chunk, int size, int level, int realX, int realZ) {
     	int mysize = size - 1;
         int[][] matrix = new int[mysize][mysize];
         double midPoint = (matrix.length-1)/2.0;
-        for (int col = 0; col < matrix.length; col++)
-        {
+        
+        for (int col = 0; col < matrix.length; col++){
             int[] row = new int[matrix.length];
             double yy = col-midPoint;
             for (int x=0; x<row.length; x++)
@@ -165,13 +166,10 @@ public class OasisPopulator extends BlockPopulator {
             matrix[col] = row;
         }
         
-        for (int x=0;x<mysize-1;x++) {
-            for (int y=0;y<mysize-1;y++) {
-                if (matrix[x][y] == 1) {
-                    world.getBlockAt(realX+x+1, world.getHighestBlockYAt(realX+x+1, realZ+y+1)-(level+1), realZ+y+1).setType(Material.DIRT);
-                       
-                }
-            }
-        }
+        for (int x=0;x<mysize-1;x++) 
+            for (int y=0;y<mysize-1;y++) 
+                if (matrix[x][y] == 1) 
+                    world.getBlockAt(realX+x+1, world.getHighestBlockYAt(realX+x+1, realZ+y+1)-(level+1), realZ+y+1).setType(Material.DIRT);                     
+                
     }
 }

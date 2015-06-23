@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -28,17 +29,16 @@ import java.sql.SQLException;
 
 public class PlayerLeave implements Listener {
 
-	private final Apocalyptic apocalyptic;
+	private final Apocalyptic plugin;
 
-	public PlayerLeave(Apocalyptic a) {
-		this.apocalyptic = a;
+	public PlayerLeave(Apocalyptic plugin) {
+		this.plugin = plugin;
 	}
-	
+
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent e) {
 		try {
-			apocalyptic.getRadiationManager().saveRadiation(e.getPlayer());
-			//apocalyptic.closeDatabase();
+			plugin.getRadiationManager().saveRadiation(e.getPlayer());
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

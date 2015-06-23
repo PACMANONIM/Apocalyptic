@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -18,9 +19,6 @@
  */
 
 package net.cyberninjapiggy.apocalyptic.generator;
-/**
- * Credit to jacek, with some changes to decrease veins spawned.
- */
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -29,15 +27,17 @@ import org.bukkit.generator.BlockPopulator;
 
 import java.util.Random;
 
+/*
+ * Credit to jacek, with some changes to decrease veins spawned.
+ */
 public class OrePopulator extends BlockPopulator {
-
 	private final Random random;
 
 	public OrePopulator(World world) {
 		this.random = new Random(world.getSeed());
 	}
 
-	private void createClump(World world, Material oreType, int size, int x, int y, int z){
+	private void createClump(World world, Material oreType, int size, int x, int y, int z) {
 		float f = this.random.nextFloat() * 3.141593F;
 
 		double d1 = x + 8 + Math.sin(f) * size / 8.0F;
@@ -48,7 +48,7 @@ public class OrePopulator extends BlockPopulator {
 		double d5 = y + this.random.nextInt(3) - 2;
 		double d6 = y + this.random.nextInt(3) - 2;
 
-		for (int i = 0; i <= size; i++){
+		for (int i = 0; i <= size; i++) {
 			double d7 = d1 + (d2 - d1) * i / size;
 			double d8 = d5 + (d6 - d5) * i / size;
 			double d9 = d3 + (d4 - d3) * i / size;
@@ -65,19 +65,19 @@ public class OrePopulator extends BlockPopulator {
 			int i1 = (int) Math.floor(d8 + d12 / 2.0D);
 			int i2 = (int) Math.floor(d9 + d11 / 2.0D);
 
-			for (int i3 = j; i3 <= n; i3++){
+			for (int i3 = j; i3 <= n; i3++) {
 				double d13 = (i3 + 0.5D - d7) / (d11 / 2.0D);
 
-				if (d13 * d13 < 1.0D){
-					for (int i4 = k; i4 <= i1; i4++){
+				if (d13 * d13 < 1.0D) {
+					for (int i4 = k; i4 <= i1; i4++) {
 						double d14 = (i4 + 0.5D - d8) / (d12 / 2.0D);
 
-						if (d13 * d13 + d14 * d14 < 1.0D){
-							for (int i5 = m; i5 <= i2; i5++){
+						if (d13 * d13 + d14 * d14 < 1.0D) {
+							for (int i5 = m; i5 <= i2; i5++) {
 								double d15 = (i5 + 0.5D - d9) / (d11 / 2.0D);
 
-                                //noinspection deprecation,deprecation
-                                if ((d13 * d13 + d14 * d14 + d15 * d15 >= 1.0D) || (world.getBlockTypeIdAt(i3, i4, i5) != Material.STONE.getId())){
+								//noinspection deprecation,deprecation
+								if ((d13 * d13 + d14 * d14 + d15 * d15 >= 1.0D) || (world.getBlockTypeIdAt(i3, i4, i5) != Material.STONE.getId())) {
 									continue;
 								}
 
@@ -90,14 +90,14 @@ public class OrePopulator extends BlockPopulator {
 		}
 	}
 
-        @Override
-	public void populate(World world, Random random, Chunk chunk){
+	@Override
+	public void populate(World world, Random random, Chunk chunk) {
 		int x, y, z, i;
 
 		int worldChunkX = chunk.getX() * 16;
 		int worldChunkZ = chunk.getZ() * 16;
 
-		for (i = 0; i < 10; ++i){
+		for (i = 0; i < 10; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
 			y = this.random.nextInt(128);
@@ -105,7 +105,7 @@ public class OrePopulator extends BlockPopulator {
 			this.createClump(world, Material.GRAVEL, 32, x, y, z);
 		}
 
-		for (i = 0; i < 21; ++i){
+		for (i = 0; i < 21; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
 			y = this.random.nextInt(128);
@@ -113,45 +113,44 @@ public class OrePopulator extends BlockPopulator {
 			this.createClump(world, Material.COAL_ORE, 16, x, y, z);
 		}
 
-		for (i = 0; i < 21; ++i){
+		for (i = 0; i < 21; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
-			y = this.random.nextInt((int) (64 * 0.8));
+			y = this.random.nextInt((int)(64 * 0.8));
 
 			this.createClump(world, Material.IRON_ORE, 8, x, y, z);
 		}
 
-		for (i = 0; i < 8; ++i){
+		for (i = 0; i < 8; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
-			y = this.random.nextInt((int) (64 * 0.75));
+			y = this.random.nextInt((int)(64 * 0.75));
 
 			this.createClump(world, Material.GOLD_ORE, 8, x, y, z);
 		}
 
-		for (i = 0; i < 10; ++i){
+		for (i = 0; i < 10; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
-			y = this.random.nextInt((int) (64 * 0.7));
+			y = this.random.nextInt((int)(64 * 0.7));
 
 			this.createClump(world, Material.REDSTONE_ORE, 7, x, y, z);
 		}
 
-		for (i = 0; i < 1; ++i){
+		for (i = 0; i < 1; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
-			y = this.random.nextInt((int) (64 * 0.4));
+			y = this.random.nextInt((int)(64 * 0.4));
 
 			this.createClump(world, Material.DIAMOND_ORE, 7, x, y, z);
 		}
 
-		for (i = 0; i < 3; ++i){
+		for (i = 0; i < 3; ++i) {
 			x = worldChunkX + this.random.nextInt(16);
 			z = worldChunkZ + this.random.nextInt(16);
-			y = this.random.nextInt((int) (64 * 0.5));
+			y = this.random.nextInt((int)(64 * 0.5));
 
 			this.createClump(world, Material.LAPIS_ORE, 6, x, y, z);
 		}
 	}
-
 }

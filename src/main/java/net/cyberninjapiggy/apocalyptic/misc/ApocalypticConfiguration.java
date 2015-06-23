@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -31,24 +32,24 @@ import java.util.Map;
  * Wrapper class for YamlConfiguration. Provides Apocalyptic-specific services such as getting the world configuration section.
  */
 public class ApocalypticConfiguration extends YamlConfiguration {
-    public void update(JavaPlugin plugin) {
-        Map<String, Object> vals = this.getValues(true);
-        new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml").delete();
-        plugin.saveDefaultConfig();
-        for (String s : vals.keySet()) {
-            if (s.equals("meta.version")) {
-                continue;
-            }
-            if (!this.contains(s))
-                this.createSection(s);
-            this.set(s, vals.get(s));
-        }
-        //plugin.saveConfig();
-    }
-    public ConfigurationSection getWorld(String world) {
-        return this.getConfigurationSection("worlds."+world);
-    }
-    public ConfigurationSection getWorld(World world) {
-        return getWorld(world.getName());
-    }
+	public void update(JavaPlugin plugin) {
+		Map < String, Object > vals = this.getValues(true);
+		new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml").delete();
+		plugin.saveDefaultConfig();
+		for (String s: vals.keySet()) {
+			if (s.equals("meta.version")) {
+				continue;
+			}
+			if (!this.contains(s)) this.createSection(s);
+			this.set(s, vals.get(s));
+		}
+	}
+	
+	public ConfigurationSection getWorld(String world) {
+		return this.getConfigurationSection("worlds." + world);
+	}
+	
+	public ConfigurationSection getWorld(World world) {
+		return getWorld(world.getName());
+	}
 }

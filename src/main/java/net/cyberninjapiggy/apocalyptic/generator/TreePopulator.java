@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -26,12 +27,7 @@ import org.bukkit.generator.BlockPopulator;
 
 import java.util.Random;
 
-/**
- *
- * @author Nick
- */
 public class TreePopulator extends BlockPopulator {
-
     @Override
     public void populate(World world, Random rand, Chunk chunk) {
         for (int x2=0;x2<16;x2++) {

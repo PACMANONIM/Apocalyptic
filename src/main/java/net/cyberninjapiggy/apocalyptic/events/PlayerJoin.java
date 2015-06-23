@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  *
  *     This file is part of Apocalyptic.
@@ -24,18 +25,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-/**
- *
- * @author Nick
- */
+
 public class PlayerJoin implements Listener {
-    private final Apocalyptic a;
+    private final Apocalyptic plugin;
+
+    public PlayerJoin(Apocalyptic plugin) {
+        this.plugin = plugin;
+    }
+    
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        a.sendApocalypticTexturePack(e.getPlayer());
-        a.getRadiationManager().loadRadiation(e.getPlayer());
+        plugin.sendApocalypticTexturePack(e.getPlayer());
+        plugin.getRadiationManager().loadRadiation(e.getPlayer());
     }
-    public PlayerJoin(Apocalyptic a) {
-        this.a = a;
-    }
+
 }
