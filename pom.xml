@@ -47,12 +47,12 @@
     <repositories>
 	<repository>
 		<id>spigot-repo</id>
-		<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+		<url>http://hub.spigotmc.org/nexus/content/groups/public</url>
 	</repository>
 
         <repository>
 		<id>elmakers-repo</id>
-		<url>https://maven.elmakers.com/repository</url>
+		<url>http://maven.elmakers.com/repository</url>
 	</repository>
         
         <repository>
