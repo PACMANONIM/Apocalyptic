@@ -1,2 +1,0 @@
-Better zombie spawn point picking
-Natural spawning for sugarcane and cactus.
