@@ -35,4 +35,5 @@ Done! Have fun!
 
 ## Notes
 >I won't create a BukkitDev / Curse's Minecraft Bukkit Plugin Page, because I don't have the time to update. If I do, The Page will most likely abandoned or lack of updates.
+
 >This is a forked version of [epicfacecreeper's Apocalyptic](https://github.com/epicfacecreeper/Apocalyptic). I created this fork because the original project looks like It's not being maintained ( Last Commit Aug 11, 2014 ), because My Server is using this plugin I decided to modify this plugin to be 1.8 Compatible.
