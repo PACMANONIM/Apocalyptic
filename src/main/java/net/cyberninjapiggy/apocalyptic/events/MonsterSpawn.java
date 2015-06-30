@@ -107,21 +107,21 @@ public class MonsterSpawn implements Listener {
                     .getInt("mobs.zombies.hordeSize.min");
         int failedAttempts = 0;
         for (int i = 0; i < hordeSize;) {
-          // int spotX = 7-a.getRandom().nextInt(14);
-          // int spotZ = 7-a.getRandom().nextInt(14);
-          // int spotY = 3-a.getRandom().nextInt(6);
           double angle = Math.random() * 360;
-          double radius = Math.random() * 7; // TODO: Max Radius at config
+          double radius = Math.random() * 255;
 
-          int spotX = Math.round((float) Math.cos(angle));
-          int spotZ = Math.round((float) (Math.sin(angle) * radius));
-          int spotY = l.getWorld().getHighestBlockYAt(spotX, spotZ);
-
-          Location spawnPoint = l.add(spotX, spotY, spotZ);
+          int addX = Math.round((float) Math.cos(angle));
+          int addZ = Math.round((float) (Math.sin(angle) * radius));
+          
+          Location spawnPoint = l.clone().add(addX, 0, addZ);
+          
+          spawnPoint.setY(l.getWorld().getHighestBlockYAt(spawnPoint));
+          
           if (!ZombieHelper.canZombieSpawn(spawnPoint) && failedAttempts <= 10) {
             failedAttempts++;
             continue;
           }
+       
           failedAttempts = 0;
           Zombie zombie = (Zombie) l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
           EntityEquipment equipment = zombie.getEquipment();
@@ -133,8 +133,8 @@ public class MonsterSpawn implements Listener {
             equipment.setHelmet(head);
             equipment.setHelmetDropChance(0f);
           }
+          
           i++;
-
         }
       }
 
