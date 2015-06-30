@@ -29,9 +29,10 @@ Done! Have fun!
 ## To-do List
 - [x] Make it Compatible with 1.8
 - [X] Use PreparedStatements instead of Plain Query in Database Updates
-- [ ] Add support for External Database ( MySQL )
-- [ ] Clean the Code ( again )
-- [ ] Better Zombie spawn picking
+- [X] Add support for External Database ( MySQL )
+- [X] Clean the Code ( again )
+- [X] Better Zombie spawn picking
+- [ ] Fix Zombie Spawn checker or Fix Zombie spawn picking?
 - [ ] Natural spawning for sugarcane and cactus
 
 ## Notes
