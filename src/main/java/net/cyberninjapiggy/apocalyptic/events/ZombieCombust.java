@@ -34,16 +34,10 @@ public class ZombieCombust implements Listener {
 
   @EventHandler
   public void onZombieBurn(EntityCombustEvent e) {
-    plugin.getLogger().info("[Debug] Entity Combust is Blocked 0");
-    
     if (plugin.worldEnabledZombie(e.getEntity().getWorld().getName())
         && !plugin.getConfig().getWorld(e.getEntity().getWorld())
             .getBoolean("mobs.zombies.burnInDaylight")) {
-      
-      plugin.getLogger().info("[Debug] Entity Combust is Blocked 1");
-      
       if (!(e instanceof EntityCombustByEntityEvent) && !(e instanceof EntityCombustByBlockEvent)) {
-        plugin.getLogger().info("[Debug] Entity Combust is Blocked 2");   
         e.setCancelled(true);
       }
     }

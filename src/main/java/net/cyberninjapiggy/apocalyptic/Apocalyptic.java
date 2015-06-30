@@ -63,7 +63,7 @@ public final class Apocalyptic extends JavaPlugin {
   private boolean wgEnabled = true;
   private Messages messages;
 
-  private static final int dboId = 43663;
+  // private static final int dboId = 43663;
   private static final String texturePack =
       "http://www.curseforge.com/media/files/769/14/apocalyptic_texture_pack.zip";
 

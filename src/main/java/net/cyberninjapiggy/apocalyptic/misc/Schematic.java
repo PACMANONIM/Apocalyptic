@@ -119,11 +119,13 @@ public class Schematic {
 
     CompoundTag schematicTag = (CompoundTag) nbtStream.readTag();
     if (!schematicTag.getName().equals("Schematic")) {
+      nbtStream.close();
       throw new IllegalArgumentException("Tag \"Schematic\" does not exist or is not first");
     }
 
     Map<String, Tag> schematic = schematicTag.getValue();
     if (!schematic.containsKey("Blocks")) {
+      nbtStream.close();
       throw new IllegalArgumentException("Schematic file is missing a \"Blocks\" tag");
     }
 
@@ -133,11 +135,15 @@ public class Schematic {
 
     String materials = getChildTag(schematic, "Materials", StringTag.class).getValue();
     if (!materials.equals("Alpha")) {
+      nbtStream.close();
       throw new IllegalArgumentException("Schematic file is not an Alpha schematic");
     }
 
     byte[] blocks = getChildTag(schematic, "Blocks", ByteArrayTag.class).getValue();
     byte[] blockData = getChildTag(schematic, "Data", ByteArrayTag.class).getValue();
+    
+    nbtStream.close();
+    
     return new Schematic(blocks, blockData, width, length, height);
   }
 
