@@ -18,16 +18,16 @@
 
 package net.cyberninjapiggy.apocalyptic.generator;
 
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 public class CavePopulator extends BlockPopulator {
   // Taken from Nordic plugin for bukkit, with modifications.

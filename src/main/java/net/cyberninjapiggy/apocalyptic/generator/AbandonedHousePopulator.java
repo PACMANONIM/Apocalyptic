@@ -18,15 +18,16 @@
 
 package net.cyberninjapiggy.apocalyptic.generator;
 
+import java.util.Random;
+
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 
 public class AbandonedHousePopulator extends BlockPopulator {

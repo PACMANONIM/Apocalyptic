@@ -18,14 +18,15 @@
 
 package net.cyberninjapiggy.apocalyptic.commands;
 
+import java.text.DecimalFormat;
+
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.text.DecimalFormat;
 
 public class RadiationCommandExecutor implements CommandExecutor {
   private final Apocalyptic plugin;

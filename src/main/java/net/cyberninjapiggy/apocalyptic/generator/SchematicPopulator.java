@@ -18,16 +18,17 @@
 
 package net.cyberninjapiggy.apocalyptic.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+
 import net.cyberninjapiggy.apocalyptic.misc.Schematic;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 
 public class SchematicPopulator extends BlockPopulator {
   private Schematic schematic;

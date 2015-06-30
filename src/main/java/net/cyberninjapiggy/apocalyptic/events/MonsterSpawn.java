@@ -112,16 +112,16 @@ public class MonsterSpawn implements Listener {
 
           int addX = Math.round((float) Math.cos(angle));
           int addZ = Math.round((float) (Math.sin(angle) * radius));
-          
+
           Location spawnPoint = l.clone().add(addX, 0, addZ);
-          
+
           spawnPoint.setY(l.getWorld().getHighestBlockYAt(spawnPoint));
-          
+
           if (!ZombieHelper.canZombieSpawn(spawnPoint) && failedAttempts <= 10) {
             failedAttempts++;
             continue;
           }
-       
+
           failedAttempts = 0;
           Zombie zombie = (Zombie) l.getWorld().spawnEntity(spawnPoint, EntityType.ZOMBIE);
           EntityEquipment equipment = zombie.getEquipment();
@@ -133,7 +133,7 @@ public class MonsterSpawn implements Listener {
             equipment.setHelmet(head);
             equipment.setHelmetDropChance(0f);
           }
-          
+
           i++;
         }
       }

@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
@@ -18,6 +19,7 @@
 package net.cyberninjapiggy.apocalyptic.events;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;

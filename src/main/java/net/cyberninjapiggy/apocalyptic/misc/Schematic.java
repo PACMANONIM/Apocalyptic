@@ -14,19 +14,26 @@
 
 package net.cyberninjapiggy.apocalyptic.misc;
 
-import com.sk89q.jnbt.*;
-import net.cyberninjapiggy.apocalyptic.generator.ChestPopulator;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
+
+import net.cyberninjapiggy.apocalyptic.generator.ChestPopulator;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+
+import com.sk89q.jnbt.ByteArrayTag;
+import com.sk89q.jnbt.CompoundTag;
+import com.sk89q.jnbt.NBTInputStream;
+import com.sk89q.jnbt.ShortTag;
+import com.sk89q.jnbt.StringTag;
+import com.sk89q.jnbt.Tag;
 
 /**
  *
@@ -141,9 +148,9 @@ public class Schematic {
 
     byte[] blocks = getChildTag(schematic, "Blocks", ByteArrayTag.class).getValue();
     byte[] blockData = getChildTag(schematic, "Data", ByteArrayTag.class).getValue();
-    
+
     nbtStream.close();
-    
+
     return new Schematic(blocks, blockData, width, length, height);
   }
 

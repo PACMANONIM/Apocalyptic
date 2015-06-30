@@ -16,31 +16,36 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-package net.cyberninjapiggy.apocalyptic.events;
+package net.cyberninjapiggy.apocalyptic.misc;
+
+import java.sql.SQLException;
+import java.util.UUID;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustByBlockEvent;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class ZombieCombust implements Listener {
-  private final Apocalyptic plugin;
+public class SavePlayerRadiationTask extends BukkitRunnable {
 
-  public ZombieCombust(Apocalyptic plugin) {
+  final Apocalyptic plugin;
+  
+  final UUID id;
+  final double value;
+  
+  public SavePlayerRadiationTask(Apocalyptic plugin, UUID id, double value) {
     this.plugin = plugin;
+    
+    this.id = id;
+    this.value = value;
   }
 
-  @EventHandler
-  public void onZombieBurn(EntityCombustEvent e) {
-    if (plugin.worldEnabledZombie(e.getEntity().getWorld().getName())
-        && !plugin.getConfig().getWorld(e.getEntity().getWorld())
-            .getBoolean("mobs.zombies.burnInDaylight")) {
-      if (!(e instanceof EntityCombustByEntityEvent) && !(e instanceof EntityCombustByBlockEvent)) {
-        e.setCancelled(true);
-      }
+  @Override
+  public void run() {
+    try {
+      plugin.getRadiationManager().saveRadiation(id, value);
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
   }
+
 }

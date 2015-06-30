@@ -18,9 +18,17 @@
 
 package net.cyberninjapiggy.apocalyptic;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
@@ -28,11 +36,28 @@ import lib.PatPeter.SQLibrary.SQLite;
 import net.cyberninjapiggy.apocalyptic.commands.ApocalypticCommandExecutor;
 import net.cyberninjapiggy.apocalyptic.commands.HazmatCommandExecutor;
 import net.cyberninjapiggy.apocalyptic.commands.RadiationCommandExecutor;
-import net.cyberninjapiggy.apocalyptic.events.*;
+import net.cyberninjapiggy.apocalyptic.events.MonsterSpawn;
+import net.cyberninjapiggy.apocalyptic.events.PlayerChangeWorld;
+import net.cyberninjapiggy.apocalyptic.events.PlayerDamaged;
+import net.cyberninjapiggy.apocalyptic.events.PlayerEat;
+import net.cyberninjapiggy.apocalyptic.events.PlayerJoin;
+import net.cyberninjapiggy.apocalyptic.events.PlayerLeave;
+import net.cyberninjapiggy.apocalyptic.events.PlayerMove;
+import net.cyberninjapiggy.apocalyptic.events.PlayerSpawn;
+import net.cyberninjapiggy.apocalyptic.events.ZombieCombust;
+import net.cyberninjapiggy.apocalyptic.events.ZombieTarget;
 import net.cyberninjapiggy.apocalyptic.generator.RavagedChunkGenerator;
-import net.cyberninjapiggy.apocalyptic.misc.*;
+import net.cyberninjapiggy.apocalyptic.misc.ApocalypticConfiguration;
+import net.cyberninjapiggy.apocalyptic.misc.Messages;
+import net.cyberninjapiggy.apocalyptic.misc.RadiationManager;
+import net.cyberninjapiggy.apocalyptic.misc.UUIDFetcher;
+import net.cyberninjapiggy.apocalyptic.misc.Util;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -47,13 +72,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public final class Apocalyptic extends JavaPlugin {
   private Logger log;
@@ -165,12 +186,12 @@ public final class Apocalyptic extends JavaPlugin {
           Map<String, UUID> uuidMap = fetcher.call();
 
           for (Map.Entry<String, UUID> entry : uuidMap.entrySet()) {
-            db.query("INSERT INTO " + tablePrefix + "radiationLevels (player, level) VALUES (\"" + entry.getValue()
-                + "\", \"" + toUpdate.get(entry.getKey()) + "\");");
+            db.query("INSERT INTO " + tablePrefix + "radiationLevels (player, level) VALUES (\""
+                + entry.getValue() + "\", \"" + toUpdate.get(entry.getKey()) + "\");");
           }
         }
       } else {
-        db.query("CREATE TABLE " + tablePrefix  + "radiationLevels ("
+        db.query("CREATE TABLE " + tablePrefix + "radiationLevels ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," + "player VARCHAR(36),"
             + "level DOUBLE);");
       }
@@ -566,8 +587,8 @@ public final class Apocalyptic extends JavaPlugin {
   public Random getRandom() {
     return rand;
   }
-  
-  public String getTablePrefix(){
+
+  public String getTablePrefix() {
     return tablePrefix;
   }
 }

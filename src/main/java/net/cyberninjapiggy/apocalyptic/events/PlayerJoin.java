@@ -19,6 +19,8 @@
 package net.cyberninjapiggy.apocalyptic.events;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+import net.cyberninjapiggy.apocalyptic.misc.LoadPlayerRadiationTask;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -34,7 +36,7 @@ public class PlayerJoin implements Listener {
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent e) {
     plugin.sendApocalypticTexturePack(e.getPlayer());
-    plugin.getRadiationManager().loadRadiation(e.getPlayer());
+    new LoadPlayerRadiationTask(plugin, e.getPlayer().getUniqueId()).runTaskAsynchronously(plugin);
   }
 
 }

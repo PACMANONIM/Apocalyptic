@@ -18,14 +18,14 @@
 
 package net.cyberninjapiggy.apocalyptic.misc;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.Map;
 
 public class Messages {
   private Plugin plugin = null;

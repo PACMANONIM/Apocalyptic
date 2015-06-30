@@ -19,6 +19,7 @@
 package net.cyberninjapiggy.apocalyptic.commands;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

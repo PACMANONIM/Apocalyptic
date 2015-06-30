@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015 Kaisar Arkhan Copyright (C) 2014 Nick Schatz
+ * Copyright (C) 2015 Kaisar Arkhan 
+ * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
  * 
@@ -20,10 +21,12 @@ package net.cyberninjapiggy.apocalyptic.misc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import lib.PatPeter.SQLibrary.Database;
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -43,21 +46,55 @@ public class RadiationManager {
       if (db
           .query(
               "SELECT COUNT(*) AS \"exists\" FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\"" + p.getUniqueId() + "\";").getInt("exists") > 0) { //$NON-NLS-3$
-        PreparedStatement ps = db.prepare("UPDATE " + plugin.getTablePrefix() + "radiationLevels SET level=? WHERE player=?;");
-        
+        PreparedStatement ps =
+            db.prepare("UPDATE " + plugin.getTablePrefix()
+                + "radiationLevels SET level=? WHERE player=?;");
+
         ps.setDouble(1, p.getMetadata(plugin.getMetadataKey()).get(0).asDouble());
         ps.setString(2, p.getUniqueId().toString());
-      
+
         ps.executeUpdate();
       } else {
-        PreparedStatement ps = db.prepare("INSERT INTO " + plugin.getTablePrefix() + "radiationLevels (player, level) VALUES (?,?)");
-        
+        PreparedStatement ps =
+            db.prepare("INSERT INTO " + plugin.getTablePrefix()
+                + "radiationLevels (player, level) VALUES (?,?)");
+
         ps.setString(1, p.getUniqueId().toString());
         ps.setDouble(2, p.getMetadata(plugin.getMetadataKey()).get(0).asDouble());
-        
+
         ps.executeUpdate();
       }
     }
+    db.close();
+  }
+
+  public void saveRadiation(UUID id, double value) throws SQLException {
+    Player p = Bukkit.getPlayer(id);
+
+    db.open();
+
+    if (db
+        .query(
+            "SELECT COUNT(*) AS \"exists\" FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\"" + id + "\";").getInt("exists") > 0) { //$NON-NLS-3$
+      PreparedStatement ps =
+          db.prepare("UPDATE " + plugin.getTablePrefix()
+              + "radiationLevels SET level=? WHERE player=?;");
+
+      ps.setDouble(1, value);
+      ps.setString(2, id.toString());
+
+      ps.executeUpdate();
+    } else {
+      PreparedStatement ps =
+          db.prepare("INSERT INTO " + plugin.getTablePrefix()
+              + "radiationLevels (player, level) VALUES (?,?)");
+
+      ps.setString(1, id.toString());
+      ps.setDouble(2, value);
+
+      ps.executeUpdate();
+    }
+    
     db.close();
   }
 
@@ -65,7 +102,28 @@ public class RadiationManager {
     db.open();
     ResultSet result;
     try {
-      result = db.query("SELECT * FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\"" + p.getUniqueId() + "\"");
+      result =
+          db.query("SELECT * FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\""
+              + p.getUniqueId() + "\"");
+      while (result.next()) {
+        p.setMetadata(plugin.getMetadataKey(),
+            new FixedMetadataValue(plugin, result.getDouble("level")));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    db.close();
+  }
+
+  public void loadRadiation(UUID id) {
+    Player p = Bukkit.getPlayer(id);
+
+    db.open();
+    ResultSet result;
+    try {
+      result =
+          db.query("SELECT * FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\""
+              + id + "\"");
       while (result.next()) {
         p.setMetadata(plugin.getMetadataKey(),
             new FixedMetadataValue(plugin, result.getDouble("level")));
@@ -88,8 +146,7 @@ public class RadiationManager {
     double oldRadiation = 0;
     if (p.getMetadata(plugin.getMetadataKey()).size() > 0) {
       oldRadiation = p.getMetadata(plugin.getMetadataKey()).get(0).asDouble();
-      p.setMetadata(plugin.getMetadataKey(), new FixedMetadataValue(plugin, oldRadiation
-          + level));
+      p.setMetadata(plugin.getMetadataKey(), new FixedMetadataValue(plugin, oldRadiation + level));
     } else {
       p.setMetadata(plugin.getMetadataKey(), new FixedMetadataValue(plugin, level));
     }

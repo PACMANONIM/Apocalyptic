@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Kaisar Arkhan 
+ * Copyright (C) 2015 Kaisar Arkhan
  * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
@@ -18,18 +18,24 @@
 
 package net.cyberninjapiggy.apocalyptic.misc;
 
-import com.google.common.collect.ImmutableList;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.Callable;
+import com.google.common.collect.ImmutableList;
 
 public class UUIDFetcher implements Callable<Map<String, UUID>> {
   private static final int MAX_SEARCH = 100;

@@ -18,7 +18,19 @@
 
 package net.cyberninjapiggy.apocalyptic.generator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -30,12 +42,6 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 import org.bukkit.util.noise.PerlinOctaveGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public class RavagedChunkGenerator extends ChunkGenerator {
   private final String genID;
@@ -235,8 +241,8 @@ public class RavagedChunkGenerator extends ChunkGenerator {
     if (schematics != null) {
       Set<String> keys = schematics.getKeys(false);
       for (String key : keys) {
-        pops.add(new SchematicPopulator(plugin, key + ".schematic", config
-            .getInt("schematics." + key), chestPopulator));
+        pops.add(new SchematicPopulator(plugin, key + ".schematic", config.getInt("schematics."
+            + key), chestPopulator));
       }
     }
 

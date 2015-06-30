@@ -19,11 +19,12 @@
 package net.cyberninjapiggy.apocalyptic.events;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
+import net.cyberninjapiggy.apocalyptic.misc.SavePlayerRadiationTask;
+
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.sql.SQLException;
 
 public class PlayerLeave implements Listener {
 
@@ -33,13 +34,10 @@ public class PlayerLeave implements Listener {
     this.plugin = plugin;
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.HIGHEST)
   public void onPlayerLeave(PlayerQuitEvent e) {
-    try {
-      plugin.getRadiationManager().saveRadiation(e.getPlayer());
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    }
+    if (!e.getPlayer().getMetadata(plugin.getMetadataKey()).isEmpty())
+      new SavePlayerRadiationTask(plugin, e.getPlayer().getUniqueId(), e.getPlayer()
+          .getMetadata(plugin.getMetadataKey()).get(0).asDouble()).runTaskAsynchronously(plugin);
   }
-
 }

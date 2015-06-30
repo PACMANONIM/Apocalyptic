@@ -18,12 +18,12 @@
 
 package net.cyberninjapiggy.apocalyptic.generator;
 
+import java.util.Random;
+
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public class TreePopulator extends BlockPopulator {
   @Override
