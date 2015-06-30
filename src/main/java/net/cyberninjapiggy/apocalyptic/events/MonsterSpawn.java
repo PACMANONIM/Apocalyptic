@@ -107,13 +107,14 @@ public class MonsterSpawn implements Listener {
                     .getInt("mobs.zombies.hordeSize.min");
         int failedAttempts = 0;
         for (int i = 0; i < hordeSize;) {
-          double angle = Math.random() * 360;
-          double radius = Math.random() * 255;
+          
+          double radius = 8;
+          double radius2 = radius * 2;
 
-          int addX = Math.round((float) Math.cos(angle));
-          int addZ = Math.round((float) (Math.sin(angle) * radius));
-
-          Location spawnPoint = l.clone().add(addX, 0, addZ);
+          int offsetX = Math.round((float) ((Math.random() * radius2) - radius));
+          int offsetZ = Math.round((float) ((Math.random() * radius2) - radius));
+          
+          Location spawnPoint = l.clone().add(offsetX, 0, offsetZ);
 
           spawnPoint.setY(l.getWorld().getHighestBlockYAt(spawnPoint));
 
