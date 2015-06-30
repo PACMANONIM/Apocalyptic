@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015 Kaisar Arkhan Copyright (C) 2014 Nick Schatz
+ * Copyright (C) 2015 Kaisar Arkhan 
+ * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
  * 
@@ -38,12 +39,12 @@ import java.util.Set;
 
 public class RavagedChunkGenerator extends ChunkGenerator {
   private final String genID;
-  private final Apocalyptic apocalyptic;
+  private final Apocalyptic plugin;
   private boolean dirtOnTop;
 
-  public RavagedChunkGenerator(Apocalyptic p, String genID) {
+  public RavagedChunkGenerator(Apocalyptic plugin, String genID) {
     this.genID = genID;
-    this.apocalyptic = p;
+    this.plugin = plugin;
 
   }
 
@@ -187,7 +188,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
 
   @Override
   public List<BlockPopulator> getDefaultPopulators(World world) {
-    File worldsFolder = new File(apocalyptic.getDataFolder() + File.separator + "worlds");
+    File worldsFolder = new File(plugin.getDataFolder() + File.separator + "worlds");
     FileConfiguration config;
     if (!worldsFolder.exists()) {
       worldsFolder.mkdir();
@@ -196,7 +197,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
         new File(worldsFolder.getAbsolutePath() + File.separator + world.getName() + ".yml");
 
     if (!worldConfig.exists()) {
-      InputStream in = apocalyptic.getResource("world.yml");
+      InputStream in = plugin.getResource("world.yml");
       OutputStream out = null;
       try {
         out = new FileOutputStream(worldConfig);
@@ -217,7 +218,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
     }
     config = YamlConfiguration.loadConfiguration(worldConfig);
 
-    ChestPopulator chestPopulator = new ChestPopulator(config, apocalyptic);
+    ChestPopulator chestPopulator = new ChestPopulator(config, plugin);
 
     ArrayList<BlockPopulator> pops;
     pops = new ArrayList<>();
@@ -226,7 +227,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
         config.getInt("oases.size.min")));
     pops.add(new TreePopulator());
     pops.add(new OrePopulator(world));
-    pops.add(new AbandonedHousePopulator(apocalyptic, config, chestPopulator));
+    pops.add(new AbandonedHousePopulator(plugin, config, chestPopulator));
     // pops.add(new CavePopulator());
     pops.add(new LavaPopulator());
 
@@ -234,7 +235,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
     if (schematics != null) {
       Set<String> keys = schematics.getKeys(false);
       for (String key : keys) {
-        pops.add(new SchematicPopulator(apocalyptic, key + ".schematic", config
+        pops.add(new SchematicPopulator(plugin, key + ".schematic", config
             .getInt("schematics." + key), chestPopulator));
       }
     }
@@ -246,7 +247,7 @@ public class RavagedChunkGenerator extends ChunkGenerator {
       for (String s : schems) {
         String name = s.split("@")[0];
         int chance = Integer.parseInt(s.split("@")[1]);
-        pops.add(new SchematicPopulator(apocalyptic, name + ".schematic", chance, chestPopulator));
+        pops.add(new SchematicPopulator(plugin, name + ".schematic", chance, chestPopulator));
       }
     }
 

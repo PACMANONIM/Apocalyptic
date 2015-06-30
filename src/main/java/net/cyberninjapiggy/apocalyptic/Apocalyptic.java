@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015 Kaisar Arkhan Copyright (C) 2014 Nick Schatz
+ * Copyright (C) 2015 Kaisar Arkhan 
+ * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
  * 
@@ -124,7 +125,7 @@ public final class Apocalyptic extends JavaPlugin {
       return;
     }
     try {
-      if (db.isTable("radiationLevels")) {
+      if (db.isTable("radiationLevels")) {     
         ResultSet resultSet = db.query("SELECT * FROM radiationLevels");
         Map<String, Double> toUpdate = new HashMap<>();
         while (resultSet.next()) {

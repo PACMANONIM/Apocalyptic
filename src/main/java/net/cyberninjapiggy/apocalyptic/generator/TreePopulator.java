@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015 Kaisar Arkhan Copyright (C) 2014 Nick Schatz
+ * Copyright (C) 2015 Kaisar Arkhan 
+ * Copyright (C) 2014 Nick Schatz
  * 
  * This file is part of Apocalyptic.
  * 
