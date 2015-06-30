@@ -32,7 +32,6 @@ Done! Have fun!
 - [X] Add support for External Database ( MySQL )
 - [X] Clean the Code ( again )
 - [X] Better Zombie spawn picking
-- [ ] Make Zombie Spawn Mechanic doesn't affect Main Server Thread to gain performance
 - [ ] Fix Zombie Spawn checker or Fix Zombie spawn picking?
 - [ ] Natural spawning for sugarcane and cactus
 
