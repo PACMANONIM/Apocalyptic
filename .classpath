@@ -27,6 +27,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/run/media/yuki/Nagato HD/Nucleus/Nucleus-Z/spigot-1.8.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
