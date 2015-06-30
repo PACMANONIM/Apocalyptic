@@ -42,15 +42,15 @@ public class RadiationManager {
     if (!p.getMetadata(plugin.getMetadataKey()).isEmpty()) {
       if (db
           .query(
-              "SELECT COUNT(*) AS \"exists\" FROM radiationLevels WHERE player=\"" + p.getUniqueId() + "\";").getInt("exists") > 0) { //$NON-NLS-3$
-        PreparedStatement ps = db.prepare("UPDATE radiationLevels SET level=? WHERE player=?;");
+              "SELECT COUNT(*) AS \"exists\" FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\"" + p.getUniqueId() + "\";").getInt("exists") > 0) { //$NON-NLS-3$
+        PreparedStatement ps = db.prepare("UPDATE " + plugin.getTablePrefix() + "radiationLevels SET level=? WHERE player=?;");
         
         ps.setDouble(1, p.getMetadata(plugin.getMetadataKey()).get(0).asDouble());
         ps.setString(2, p.getUniqueId().toString());
       
         ps.executeUpdate();
       } else {
-        PreparedStatement ps = db.prepare("INSERT INTO radiationLevels (player, level) VALUES (?,?)");
+        PreparedStatement ps = db.prepare("INSERT INTO " + plugin.getTablePrefix() + "radiationLevels (player, level) VALUES (?,?)");
         
         ps.setString(1, p.getUniqueId().toString());
         ps.setDouble(2, p.getMetadata(plugin.getMetadataKey()).get(0).asDouble());
@@ -65,7 +65,7 @@ public class RadiationManager {
     db.open();
     ResultSet result;
     try {
-      result = db.query("SELECT * FROM radiationLevels WHERE player=\"" + p.getUniqueId() + "\"");
+      result = db.query("SELECT * FROM " + plugin.getTablePrefix() + "radiationLevels WHERE player=\"" + p.getUniqueId() + "\"");
       while (result.next()) {
         p.setMetadata(plugin.getMetadataKey(),
             new FixedMetadataValue(plugin, result.getDouble("level")));

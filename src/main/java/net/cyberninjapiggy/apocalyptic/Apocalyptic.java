@@ -21,7 +21,9 @@ package net.cyberninjapiggy.apocalyptic;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 import lib.PatPeter.SQLibrary.Database;
+import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
 import net.cyberninjapiggy.apocalyptic.commands.ApocalypticCommandExecutor;
 import net.cyberninjapiggy.apocalyptic.commands.HazmatCommandExecutor;
@@ -29,6 +31,7 @@ import net.cyberninjapiggy.apocalyptic.commands.RadiationCommandExecutor;
 import net.cyberninjapiggy.apocalyptic.events.*;
 import net.cyberninjapiggy.apocalyptic.generator.RavagedChunkGenerator;
 import net.cyberninjapiggy.apocalyptic.misc.*;
+
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
@@ -76,6 +79,7 @@ public final class Apocalyptic extends JavaPlugin {
   private ApocalypticConfiguration cachedConfig;
   private boolean recacheConfig;
 
+  private String tablePrefix;
 
   @Override
   public void onEnable() {
@@ -115,18 +119,30 @@ public final class Apocalyptic extends JavaPlugin {
         // getConfig().update(this);
       }
     }
-    db =
-        new SQLite(log, getMessages().getCaption("logtitle"), getDataFolder().getAbsolutePath(),
-            "apocalyptic");
+
+    if (getConfig().getBoolean("mysql.enable", false)) {
+      db =
+          new MySQL(log, getMessages().getCaption("logtitle"), getConfig().getString("mysql.host"),
+              getConfig().getInt("mysql.port"), getConfig().getString("mysql.database"),
+              getConfig().getString("mysql.username"), getConfig().getString("mysql.password"));
+      tablePrefix = getConfig().getString("mysql.tablePrefix");
+
+    } else {
+      db =
+          new SQLite(log, getMessages().getCaption("logtitle"), getDataFolder().getAbsolutePath(),
+              "apocalyptic");
+      tablePrefix = "";
+    }
 
     if (!db.open()) {
       log.severe(getMessages().getCaption("errNotOpenDatabase"));
       this.setEnabled(false);
       return;
     }
+
     try {
-      if (db.isTable("radiationLevels")) {     
-        ResultSet resultSet = db.query("SELECT * FROM radiationLevels");
+      if (db.isTable(tablePrefix + "radiationLevels")) {
+        ResultSet resultSet = db.query("SELECT * FROM " + tablePrefix + "radiationLevels");
         Map<String, Double> toUpdate = new HashMap<>();
         while (resultSet.next()) {
           String player = resultSet.getString("player");
@@ -141,7 +157,7 @@ public final class Apocalyptic extends JavaPlugin {
           log.info("Apocalyptic is converting your database. Please stand by...");
 
           db.query("DROP TABLE radiationLevels");
-          db.query("CREATE TABLE radiationLevels ("
+          db.query("CREATE TABLE " + tablePrefix + "radiationLevels ("
               + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," + "player VARCHAR(36),"
               + "level DOUBLE);");
 
@@ -149,12 +165,12 @@ public final class Apocalyptic extends JavaPlugin {
           Map<String, UUID> uuidMap = fetcher.call();
 
           for (Map.Entry<String, UUID> entry : uuidMap.entrySet()) {
-            db.query("INSERT INTO radiationLevels (player, level) VALUES (\"" + entry.getValue()
+            db.query("INSERT INTO " + tablePrefix + "radiationLevels (player, level) VALUES (\"" + entry.getValue()
                 + "\", \"" + toUpdate.get(entry.getKey()) + "\");");
           }
         }
       } else {
-        db.query("CREATE TABLE radiationLevels ("
+        db.query("CREATE TABLE " + tablePrefix  + "radiationLevels ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," + "player VARCHAR(36),"
             + "level DOUBLE);");
       }
@@ -549,5 +565,9 @@ public final class Apocalyptic extends JavaPlugin {
 
   public Random getRandom() {
     return rand;
+  }
+  
+  public String getTablePrefix(){
+    return tablePrefix;
   }
 }
