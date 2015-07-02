@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -48,6 +47,7 @@ import net.cyberninjapiggy.apocalyptic.events.ZombieCombust;
 import net.cyberninjapiggy.apocalyptic.events.ZombieTarget;
 import net.cyberninjapiggy.apocalyptic.generator.RavagedChunkGenerator;
 import net.cyberninjapiggy.apocalyptic.misc.ApocalypticConfiguration;
+import net.cyberninjapiggy.apocalyptic.misc.EssentialRepeatingTask;
 import net.cyberninjapiggy.apocalyptic.misc.Messages;
 import net.cyberninjapiggy.apocalyptic.misc.RadiationManager;
 import net.cyberninjapiggy.apocalyptic.misc.UUIDFetcher;
@@ -55,13 +55,12 @@ import net.cyberninjapiggy.apocalyptic.misc.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -69,12 +68,8 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public final class Apocalyptic extends JavaPlugin {
   private Logger log;
@@ -84,7 +79,6 @@ public final class Apocalyptic extends JavaPlugin {
   private boolean wgEnabled = true;
   private Messages messages;
 
-  // private static final int dboId = 43663;
   private static final String texturePack =
       "http://www.curseforge.com/media/files/769/14/apocalyptic_texture_pack.zip";
 
@@ -101,6 +95,11 @@ public final class Apocalyptic extends JavaPlugin {
   private boolean recacheConfig;
 
   private String tablePrefix;
+  
+  private Listener[] listeners = new Listener[] {new MonsterSpawn(this),
+      new PlayerChangeWorld(this), new PlayerDamaged(this), new PlayerEat(this),
+      new PlayerJoin(this), new PlayerLeave(this), new PlayerMove(this), new PlayerSpawn(this),
+      new ZombieCombust(this), new ZombieTarget(this)};
 
   @Override
   public void onEnable() {
@@ -108,8 +107,34 @@ public final class Apocalyptic extends JavaPlugin {
 
     log = getLogger();
     rand = new Random();
-    wg = getWorldGuard();
+    
+    createHazmatSuitItems();
 
+    hookWorldGuard();
+    
+    saveDefaultConfigs();
+    
+    startDatabaseConnection();
+
+    convertOldDatabase();
+
+    radiationManager = new RadiationManager(db, this);
+
+    registerCommands();
+    
+    registerListeners();
+    
+    registerRecipes();
+
+    startRepeatingTask();
+  }
+
+  @Override
+  public void onDisable() {
+    savePlayersRadiation();
+  }
+  
+  private void createHazmatSuitItems(){
     hazmatHood =
         Util.setName(new ItemStack(Material.CHAINMAIL_HELMET, 1), ChatColor.RESET
             + getMessages().getCaption("gasMask"));
@@ -122,11 +147,15 @@ public final class Apocalyptic extends JavaPlugin {
     hazmatBoots =
         Util.setName(new ItemStack(Material.CHAINMAIL_BOOTS, 1), ChatColor.RESET
             + getMessages().getCaption("hazmatBoots"));
-
-    if (wg == null) {
+  }
+  
+  private void hookWorldGuard(){
+    if ((wg = getWorldGuard()) == null) {
       wgEnabled = false;
     }
-
+  }
+  
+  private void saveDefaultConfigs(){
     if (!getDataFolder().exists()) {
       if (!getDataFolder().mkdir()) {
         log.severe("Cannot create data folder. Expect terrible errors.");
@@ -135,12 +164,10 @@ public final class Apocalyptic extends JavaPlugin {
     messages.saveDefault();
     if (!new File(getDataFolder().getPath() + File.separator + "config.yml").exists()) {
       saveDefaultConfig();
-    } else {
-      if (!getConfig().getString("meta.version").equals(this.getDescription().getVersion())) {
-        // getConfig().update(this);
-      }
     }
-
+  }
+  
+  private void startDatabaseConnection(){
     if (getConfig().getBoolean("mysql.enable", false)) {
       db =
           new MySQL(log, getMessages().getCaption("logtitle"), getConfig().getString("mysql.host"),
@@ -160,7 +187,9 @@ public final class Apocalyptic extends JavaPlugin {
       this.setEnabled(false);
       return;
     }
-
+  }
+  
+  private void convertOldDatabase(){
     try {
       if (db.isTable(tablePrefix + "radiationLevels")) {
         ResultSet resultSet = db.query("SELECT * FROM " + tablePrefix + "radiationLevels");
@@ -203,40 +232,21 @@ public final class Apocalyptic extends JavaPlugin {
       log.log(Level.SEVERE, null, e);
     }
     db.close();
-
-    radiationManager = new RadiationManager(db, this);
-
-    // Disabled because this is a Forked version
-    /*
-     * if (getConfig().getBoolean("meta.version-check")) { Updater versionCheck = new Updater(this,
-     * dboId, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false); if (versionCheck.getResult()
-     * != Updater.UpdateResult.DISABLED &&
-     * !versionCheck.getLatestName().equals(this.getDescription().getName() + " v" +
-     * this.getDescription().getVersion())) { if (getConfig().getBoolean("meta.auto-update")) { new
-     * Updater(this, dboId, this.getFile(), Updater.UpdateType.NO_VERSION_CHECK,
-     * getConfig().getBoolean("meta.show-download-progress")); } else { log.info(ChatColor.GREEN +
-     * getMessages().getCaption("updateAvaliable") + ": " + versionCheck.getLatestName());
-     * //$NON-NLS-3$ } } }
-     */
-
-    // CommandExecutors
+  }
+  
+  private void registerCommands(){
     getCommand("radiation").setExecutor(new RadiationCommandExecutor(this));
     getCommand("apocalyptic").setExecutor(new ApocalypticCommandExecutor(this));
     getCommand("hazmat").setExecutor(new HazmatCommandExecutor(this));
+  }
 
-    // Register Listeners
-    getServer().getPluginManager().registerEvents(new PlayerSpawn(this), this);
-    getServer().getPluginManager().registerEvents(new MonsterSpawn(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerEat(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerDamaged(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerChangeWorld(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
-    getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
-    getServer().getPluginManager().registerEvents(new ZombieTarget(this), this);
-    getServer().getPluginManager().registerEvents(new ZombieCombust(this), this);
-
-    // Add recipes
+  private void registerListeners(){
+    for(Listener listener : listeners){
+      getServer().getPluginManager().registerEvents(listener, this);
+    }
+  }
+  
+  private void registerRecipes(){
     ShapedRecipe hazardHelmetR = new ShapedRecipe(hazmatHood);
     hazardHelmetR.shape("SSS", "S S");
     hazardHelmetR.setIngredient('S', Material.SPONGE);
@@ -296,79 +306,13 @@ public final class Apocalyptic extends JavaPlugin {
     getServer().addRecipe(hazardPantsR);
     getServer().addRecipe(hazardChestR);
     getServer().addRecipe(hazardHelmetR);
-
-    // Schedules
-
-    getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-      @Override
-      public void run() {
-        for (World w : getServer().getWorlds()) {
-          Object regions;
-          for (Player p : w.getPlayers()) {
-            boolean noFallout = false;
-            boolean forceFallout = false;
-            if (wgEnabled) {
-              regions =
-                  ((WorldGuardPlugin) wg).getRegionManager(w).getApplicableRegions(p.getLocation());
-              for (ProtectedRegion next : ((ApplicableRegionSet) regions)) {
-                for (String s : getConfig().getStringList("regions.fallout")) {
-                  if (next.getId().equals(s)) {
-                    forceFallout = true;
-                    break;
-                  }
-                }
-                for (String s : getConfig().getStringList("regions.noFallout")) {
-                  if (next.getId().equals(s)) {
-                    noFallout = true;
-                    break;
-                  }
-                }
-              }
-            }
-            if (!noFallout && (worldEnabledFallout(w.getName()) || forceFallout)) {
-              // Acid Rain
-              Location l = p.getLocation();
-              double temp = Util.getBiomeTemp(l);
-              if (p.getEquipment().getHelmet() == null
-                  && p.getWorld().getHighestBlockYAt(l.getBlockX(), l.getBlockZ()) <= l.getBlockY()
-                  && p.getWorld().hasStorm() && temp < 1.0D) {
-                Util.damageWithCause(p, getMessages().getCaption("acidRain"), p.getWorld()
-                    .getDifficulty().ordinal() * 2);
-              }
-              // Neurological death syndrome
-              if (radiationManager.getPlayerRadiation(p) >= 10.0D) {
-                ArrayList<PotionEffect> pfx = new ArrayList<>();
-                pfx.add(new PotionEffect(PotionEffectType.BLINDNESS, 10 * 20, 2));
-                pfx.add(new PotionEffect(PotionEffectType.CONFUSION, 10 * 20, 2));
-                pfx.add(new PotionEffect(PotionEffectType.SLOW, 10 * 20, 2));
-                pfx.add(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10 * 20, 2));
-                pfx.add(new PotionEffect(PotionEffectType.WEAKNESS, 10 * 20, 2));
-                p.addPotionEffects(pfx);
-              }
-              // Add radiation
-              boolean hazmatSuit = playerWearingHazmatSuit(p);
-              boolean aboveLowPoint =
-                  p.getLocation().getBlockY() > getConfig().getWorld(w).getInt("radiationBottom");
-              boolean belowHighPoint =
-                  p.getLocation().getBlockY() < getConfig().getWorld(w).getInt("radiationTop");
-              boolean random = rand.nextInt(4) == 0;
-              if (!hazmatSuit && aboveLowPoint && belowHighPoint && random) {
-                radiationManager.addPlayerRadiation(
-                    p,
-                    (p.getWorld().getEnvironment() == Environment.NETHER ? getConfig().getWorld(w)
-                        .getDouble("radiationRate") * 2 : getConfig().getWorld(w).getDouble(
-                        "radiationRate"))
-                        * (Math.round(p.getLevel() / 10) + 1));
-              }
-            }
-          }
-        }
-      }
-    }, 20 * ((long) 10), 20 * ((long) 10));
   }
-
-  @Override
-  public void onDisable() {
+  
+  private void startRepeatingTask(){
+    getServer().getScheduler().scheduleSyncRepeatingTask(this, new EssentialRepeatingTask(this), 20L *  10L, 20L * 10L);
+  }
+  
+  private void savePlayersRadiation(){
     if (!db.open()) {
       log.severe(getMessages().getCaption("errNotOpenDatabase"));
       return;
@@ -384,7 +328,7 @@ public final class Apocalyptic extends JavaPlugin {
       Logger.getLogger(Apocalyptic.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
-
+  
   @Override
   public ChunkGenerator getDefaultWorldGenerator(String worldName, String genID) {
     return new RavagedChunkGenerator(this, genID);
@@ -413,7 +357,7 @@ public final class Apocalyptic extends JavaPlugin {
    * @param p The player
    * @return whether the player has a full hazmat suit
    */
-  public boolean playerWearingHazmatSuit(Player p) {
+  public boolean isPlayerWearingHazmatSuit(Player p) {
     EntityEquipment e = p.getEquipment();
     boolean helmet =
         e.getHelmet() != null
@@ -503,7 +447,10 @@ public final class Apocalyptic extends JavaPlugin {
     }
   }
 
-  private Plugin getWorldGuard() {
+  public Plugin getWorldGuard() {
+    if(wg != null)
+      return wg;
+    
     Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
 
     // WorldGuard may not be loaded
@@ -512,6 +459,10 @@ public final class Apocalyptic extends JavaPlugin {
     }
 
     return plugin;
+  }
+
+  public boolean isWorldGuardEnabled() {
+    return wgEnabled;
   }
 
   /**
