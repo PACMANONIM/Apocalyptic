@@ -22,14 +22,14 @@ import java.util.UUID;
 
 import net.cyberninjapiggy.apocalyptic.Apocalyptic;
 import net.cyberninjapiggy.apocalyptic.misc.ZombieHelper;
-import net.minecraft.server.v1_8_R1.AttributeInstance;
-import net.minecraft.server.v1_8_R1.AttributeModifier;
-import net.minecraft.server.v1_8_R1.EntityInsentient;
-import net.minecraft.server.v1_8_R1.GenericAttributes;
+import net.minecraft.server.v1_8_R3.AttributeInstance;
+import net.minecraft.server.v1_8_R3.AttributeModifier;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.GenericAttributes;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -59,7 +59,7 @@ public class MonsterSpawn implements Listener {
         && plugin.worldEnabledZombie(entity.getLocation().getWorld().getName())) {
       EntityInsentient nmsEntity = (EntityInsentient) ((CraftEntity) entity).getHandle();
 
-      AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.d);
+      AttributeInstance attributes = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED);
 
       AttributeModifier modifier =
           new AttributeModifier(zombieSpeedUUID, "Apocalyptic movement speed modifier", plugin
@@ -108,7 +108,7 @@ public class MonsterSpawn implements Listener {
         int failedAttempts = 0;
         for (int i = 0; i < hordeSize;) {
           
-          double radius = 8;
+          double radius = 64;
           double radius2 = radius * 2;
 
           int offsetX = Math.round((float) ((Math.random() * radius2) - radius));
